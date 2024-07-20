@@ -1,0 +1,9 @@
+requests
+beautifulsoup4
+PyPDF2
+transformers
+chromadb
+fastapi
+uvicorn
+pydantic
+openai
