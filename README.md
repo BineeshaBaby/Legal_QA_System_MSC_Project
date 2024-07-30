@@ -7,13 +7,7 @@ This project processes legal documents by extracting text from PDFs, enhancing t
 1. Clone the repository.
 2. Create a virtual environment and activate it.
 3. Install the dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
 4. Create a `.env` file in the root directory and add your OpenAI API key:
-    ```plaintext
-    OPENAI_API_KEY=your_openai_api_key_here
-    ```
 
 ## Usage
 1. Run `extract_text.py` to extract text from a PDF and create overlapping chunks.
@@ -35,5 +29,4 @@ This project processes legal documents by extracting text from PDFs, enhancing t
 - `combined_text_chunks.txt`: Contains the combined text chunks extracted from the PDF.
 - `metadata.json`: Contains metadata for each text chunk.
 
-## License
-This project is licensed under the MIT License.
+
