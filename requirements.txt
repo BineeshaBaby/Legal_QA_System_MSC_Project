@@ -1,5 +1,4 @@
 requests
-beautifulsoup4
 PyPDF2
 transformers
 chromadb
@@ -7,3 +6,13 @@ fastapi
 uvicorn
 pydantic
 openai
+pypdf
+sentence-transformers==2.2.1
+chromadb
+openai
+PyPDF2
+python-dotenv
+nltk
+gradio
+fastapi==0.95.2
+uvicorn==0.22.0
