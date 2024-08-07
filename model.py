@@ -1,5 +1,6 @@
 import os
 import json
+import openai
 import logging
 from sentence_transformers import SentenceTransformer
 from chromadb import Client as ChromaClient
@@ -36,11 +37,23 @@ def store_embeddings_in_chromadb(collection, embeddings, text_chunks, metadata_l
     """
     logging.info("Storing embeddings in ChromaDB...")
     ids = [f"doc_{i}" for i in range(len(text_chunks))]  # Generate unique IDs for each document
+    
+    # Ensure metadata values are of allowed types
+    def sanitize_metadata(metadata):
+        sanitized_metadata = {}
+        for key, value in metadata.items():
+            if isinstance(value, (list, dict)):
+                sanitized_metadata[key] = str(value)
+            else:
+                sanitized_metadata[key] = value
+        return sanitized_metadata
+
     for text, embedding, metadata, doc_id in zip(text_chunks, embeddings, metadata_list, ids):
+        sanitized_metadata = sanitize_metadata(metadata)
         collection.add(
             ids=[doc_id],
             documents=[text],
-            metadatas=[metadata],
+            metadatas=[sanitized_metadata],
             embeddings=[embedding]
         )
     logging.info("Embeddings successfully stored in ChromaDB.")
@@ -95,8 +108,8 @@ def query_chromadb(collection, query_text, top_k=5):
 
 if __name__ == "__main__":
     # Path to the text chunks and metadata files
-    text_chunks_file = r"C:\Users\BINEESHA BABY\Desktop\MSC Project\combined_text_chunks.txt"
-    metadata_list_file = r"C:\Users\BINEESHA BABY\Desktop\MSC Project\metadata.json"
+    text_chunks_file = r"C:\Users\BINEESHA BABY\Desktop\MSC Project\combined_text_chunks_all.txt"
+    metadata_list_file = r"C:\Users\BINEESHA BABY\Desktop\MSC Project\combined_metadata_all.json"
     
     # Load the text chunks and metadata from files
     logging.info("Starting the loading process...")
@@ -115,16 +128,22 @@ if __name__ == "__main__":
     query_text = "What is the fountain of marshal law?"
 
     # Perform the query
-    documents, distances, metadatas = query_chromadb(collection, query_text, top_k=5)
+    results = query_chromadb(collection, query_text, top_k=5)
 
-    # Print results
-    if documents:
-        logging.info("Query Results:")
-        for doc, dist, meta in zip(documents, distances, metadatas):
-            print(f"Document: {doc}, Distance: {dist}, Metadata: {meta}")
+    # Print results for manual inspection
+    if results:
+        documents, distances, metadatas = results
+        seen_chunks = set()
+        for i, (doc_list, dist_list, meta_list) in enumerate(zip(documents, distances, metadatas), 1):
+            for doc, dist, meta in zip(doc_list, dist_list, meta_list):
+                chunk_id = meta.get('chunk_id', 'N/A')
+                if chunk_id not in seen_chunks:
+                    seen_chunks.add(chunk_id)
+                    print(f"Result {i}:")
+                    print(f"Document ID: {meta.get('document_id', 'N/A')}")
+                    print(f"Chunk ID: {chunk_id}")
+                    print(f"Distance: {dist}")
+                    print(f"Content: {doc[:500]}...")  # Print the first 500 characters for brevity
+                    print("-" * 80)
     else:
-        logging.info("No results found.")
-
-
-
-
+        print("No results found.")
