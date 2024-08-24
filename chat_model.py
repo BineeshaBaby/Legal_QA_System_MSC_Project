@@ -16,15 +16,19 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 # Load the knowledge base
 def load_knowledge_base(file_path):
+    """Load the knowledge base from a specified file."""
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         logging.error(f"File not found: {file_path}")
-        return []
+        return {}
+    except json.JSONDecodeError:
+        logging.error(f"Error decoding JSON from the file: {file_path}")
+        return {}
     except Exception as e:
         logging.error(f"Error loading knowledge base: {e}")
-        return []
+        return {}
 
 def summarize_text(text, max_tokens=2000):
     try:
