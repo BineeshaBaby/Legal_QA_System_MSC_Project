@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import os
 import openai
 from dotenv import load_dotenv
@@ -127,4 +128,74 @@ iface = gr.Interface(
 )
 
 if __name__ == "__main__":
+=======
+import gradio as gr
+import requests
+
+# FastAPI server URL (assuming it's running locally on port 8000)
+API_URL = "http://127.0.0.1:8000/ask"
+
+def answer_question(Question):
+    # Send the question to the FastAPI backend
+    response = requests.post(API_URL, json={"question": Question})
+    
+    if response.status_code == 200:
+        answer = response.json().get("answer", "")
+        history.append((Question, answer))
+        return answer, get_history()
+    else:
+        return "Error: Could not retrieve answer", get_history()
+
+history = []
+
+def get_history():
+    return "\n\n".join([f"<p><strong>Q: {q}</strong><br>A: {a}</p>" for q, a in history])
+
+# Custom CSS for styling
+custom_css = """
+body {
+    background-color: grey;
+    font-family: Arial, sans-serif;
+}
+.gradio-container {
+    display: flex;
+    flex-direction: row;
+}
+.left-container {
+    flex: 3;
+    padding: 20px;
+}
+.right-container {
+    flex: 1;
+    padding: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+}
+.history-box {
+    height: 400px;
+    overflow-y: scroll;
+    padding: 10px;
+    background-color: grey;
+}
+.footer {
+    margin-top: 20px;
+    text-align: center;
+}
+"""
+
+# Define Gradio interface
+iface = gr.Interface(
+    fn=answer_question,
+    inputs=gr.Textbox(lines=2, placeholder="Enter your Legal Question..."),
+    outputs=[
+        gr.Textbox(lines=5, label="Answer"),
+        gr.HTML(label="History")
+    ],
+    title="LEGA: A Perfect Legal Assistant",
+    description="Hello! How can I assist you with your legal question today?",  
+    css=custom_css
+)
+
+if __name__ == "__main__":
+>>>>>>> b7bbe38 (adding files after end to end tesing)
     iface.launch()
