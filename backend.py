@@ -30,5 +30,5 @@ def ask_question(request: QuestionRequest):
     answer = generate_response_gpt4(context, request.question)
     return {"answer": answer}
 
-# uvicorn backend:backend --reload
+## uvicorn backend:backend --reload
 
