@@ -1,19 +1,18 @@
-pypdf
-sentence-transformers==2.2.1
-chromadb
-openai
 PyPDF2
+sentence-transformers
+chromadb
+chromadb client
+openai
 python-dotenv
 spacy
 nltk
 flask
 pygments
 gradio
-fastapi==0.95.2
-uvicorn==0.22.0
-
-
-
-
+fastapi
+uvicorn
+transformers
+nltk
+pydantic
 
 
